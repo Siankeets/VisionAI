@@ -30,7 +30,7 @@ export default function Index() {
 
   async function takePicture() {
   if (!cameraRef.current) return;
-  const result = await cameraRef.current.takePictureAsync({ quality: 0.3 });
+  const result = await cameraRef.current.takePictureAsync({ quality: 0.1, scale: 0.5, skipProcessing: false });
   router.push({
     pathname: '/PreviewScreen',
     params: { photoUri: result.uri },
