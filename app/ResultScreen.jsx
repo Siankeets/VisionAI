@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { analyzeImage, ANALYSIS_PROMPT } from '../lib/gemini';
+import { analyzeImage, PROMPTS } from '../lib/gemini';
 
 export default function ResultScreen() {
-  const { base64Image } = useLocalSearchParams();
+  const { base64Image, promptKey } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -17,7 +17,8 @@ export default function ResultScreen() {
     setLoading(true);
     setError(null);
     try {
-      const result = await analyzeImage(base64Image, ANALYSIS_PROMPT);
+      const prompt = PROMPTS[promptKey] ?? PROMPTS.academic;
+      const result = await analyzeImage(base64Image, prompt);
       console.log('Gemini response:', JSON.stringify(result));
       const textPart = result?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!textPart) throw new Error('Empty response from Gemini');
