@@ -1,11 +1,15 @@
 import { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
+
+
 
 export default function Index() {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
+   const router = useRouter();
 
   if (!permission) {
     return <View style={styles.container} />;
@@ -25,11 +29,13 @@ export default function Index() {
   }
 
   async function takePicture() {
-    if (!cameraRef.current) return;
-    const result = await cameraRef.current.takePictureAsync({ quality: 0.7 });
-    setPhoto(result.uri);
-    console.log('Photo taken:', result.uri);
-  }
+  if (!cameraRef.current) return;
+  const result = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+  router.push({
+    pathname: '/PreviewScreen',
+    params: { photoUri: result.uri },
+  });
+}
 
   return (
     <View style={styles.container}>
